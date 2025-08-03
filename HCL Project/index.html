@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #74ebd5, #9face6);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .weather-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 320px;
+    }
+
+    input {
+      margin: 0.5rem;
+      padding: 0.5rem;
+      width: 80%;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+
+    .weather-info p {
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<div class="weather-container">
+    <h1>Weather App</h1>
+    <input type="text" id="lat" placeholder="Enter Latitude" />
+    <input type="text" id="lon" placeholder="Enter Longitude" />
+    <button onclick="fetchWeather()">Get Weather</button>
+
+    <div class="weather-info">
+      <p id="location">Location: --</p>
+      <p id="temperature">Temperature: -- °C</p>
+      <p id="condition">Condition: --</p>
+      <p id="humidity">Humidity: --%</p>
+      <p id="error" class="error"></p>
+    </div>
+  </div>
+   <script>
+    const API_KEY = "830305bb7193b65cd870198f82e8b4fd";
+
+    async function fetchWeather() {
+      const lat = document.getElementById("lat").value.trim();
+      const lon = document.getElementById("lon").value.trim();
+      const errorEl = document.getElementById("error");
+
+      if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
+        errorEl.textContent = "Please enter valid latitude and longitude.";
+        return;
+      }
+
+      const url = https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY};
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch weather data");
+        const data = await response.json();
+        
+        console.log(data)
+
+        const current = data.current;
+        document.getElementById("location").textContent = Location: (${lat}, ${lon});
+        document.getElementById("temperature").textContent = Temperature: ${current.temp} °C;
+        document.getElementById("condition").textContent = Condition: ${current.weather[0].description};
+        document.getElementById("humidity").textContent = Humidity: ${current.humidity}%;
+        errorEl.textContent = "";
+      } catch (error) {
+        errorEl.textContent = "Error loading weather data.";
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
