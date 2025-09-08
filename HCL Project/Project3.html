@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Online Portfolio Creator</title>
+  <style>
+    :root {
+      --bg: #0f172a; /* slate-900 */
+      --card: #111827; /* gray-900 */
+      --muted: #94a3b8; /* slate-400 */
+      --text: #e5e7eb; /* gray-200 */
+      --brand: #22c55e; /* green-500 */
+      --brand-2: #3b82f6; /* blue-500 */
+      --ring: rgba(59, 130, 246, .35);
+    }
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(34,197,94,.15), transparent 40%),
+                  radial-gradient(1200px 600px at 110% 10%, rgba(59,130,246,.12), transparent 40%),
+                  var(--bg);
+    }
+    header { padding: 28px 20px 10px; text-align: center }
+    header h1 { margin: 0; font-size: 28px; letter-spacing: .3px }
+    header p { margin: 6px 0 0; color: var(--muted); font-size: 14px }
+
+    .wrap { display: grid; grid-template-columns: 450px 1fr; gap: 18px; padding: 18px; max-width: 1280px; margin: 0 auto }
+    @media (max-width: 1024px) { .wrap { grid-template-columns: 1fr } }
+
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,.35); overflow: hidden }
+    .card .head { display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom: 1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.02) }
+    .card .head h2 { margin:0; font-size: 16px; font-weight: 600; letter-spacing:.2px }
+
+    form { padding: 16px 18px 20px }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap:12px }
+    .row-3 { grid-template-columns: 1fr 1fr 1fr }
+    .row-1 { grid-template-columns: 1fr }
+    label { display:block; font-size: 12px; color: var(--muted); margin: 10px 0 6px }
+    input, textarea, select {
+      width: 100%; border: 1px solid rgba(255,255,255,.12); background: rgba(2,6,23,.6);
+      color: var(--text); padding: 10px 12px; border-radius: 10px; outline: none; font-size: 14px; 
+    }
+    input:focus, textarea:focus, select:focus { box-shadow: 0 0 0 4px var(--ring); border-color: rgba(59,130,246,.55) }
+    textarea { min-height: 90px; resize: vertical }
+
+    .inline { display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+    .btn {
+      padding: 10px 14px; border-radius: 12px; border: none; cursor: pointer; font-weight:600; letter-spacing:.2px; 
+      transition: transform .06s ease, box-shadow .2s ease; box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    }
+    .btn:active { transform: translateY(1px) }
+    .primary { background: linear-gradient(135deg, var(--brand), #16a34a); color: #07130a; }
+    .secondary { background: linear-gradient(135deg, var(--brand-2), #2563eb); color: #061022 }
+    .ghost { background: transparent; border: 1px dashed rgba(255,255,255,.25); color: var(--text) }
+
+    .note { font-size: 12px; color: var(--muted); margin-left: 6px }
+
+    .preview { padding:0 }
+    .preview iframe { width: 100%; height: 640px; border: 0; display:block; background:white; border-top-left-radius: 0; border-top-right-radius: 0 }
+
+    .toolbar { padding: 12px 14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+    .badge { font-size: 11px; padding: 6px 8px; background: rgba(148,163,184,.18); border: 1px solid rgba(148,163,184,.35); border-radius: 999px }
+
+    .footer { text-align:center; padding: 14px; color: var(--muted); font-size: 12px }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0 }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Online Portfolio Creator</h1>
+    <p>Fill the form → live preview → download your portfolio as a single HTML file.</p>
+  </header>
+
+  <div class="wrap">
+    <!-- FORM CARD -->
+    <section class="card">
+      <div class="head">
+        <h2> Your Details</h2>
+        <span class="badge">Single-file app</span>
+      </div>
+      <form id="portfolioForm">
+        <div class="row">
+          <div>
+            <label for="name">Full Name</label>
+            <input id="name" placeholder="e.g., Rajnish Jha" required />
+          </div>
+          <div>
+            <label for="role">Role / Title</label>
+            <input id="role" placeholder="e.g., Frontend Developer" required />
+          </div>
+        </div>
+
+        <!-- Profile Image Input -->
+        <div class="row-1 row">
+          <div>
+            <label for="bioImage">Profile Image</label>
+            <input id="bioImage" type="file" accept="image/*" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="name@example.com" />
+          </div>
+          <div>
+            <label for="phone">Phone</label>
+            <input id="phone" placeholder="+91-XXXXXXXXXX" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="location">Location</label>
+            <input id="location" placeholder="City, Country" />
+          </div>
+          <div>
+            <label for="links">Links (comma separated)</label>
+            <input id="links" placeholder="https://linkedin.com/in/you" />
+          </div>
+        </div>
+
+        <div class="row-1 row">
+          <div>
+            <label for="bio">Short Bio</label>
+            <textarea id="bio" placeholder="A concise 2–3 sentence summary about you..."></textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="skills">Skills (comma separated)</label>
+            <input id="skills" placeholder="HTML, CSS, JavaScript, React" />
+          </div>
+          <div>
+            <label for="education">Education (semicolon to separate items)</label>
+            <input id="education" placeholder="B.Sc. CS — IIT Patna (2026); Class XII — CBSE (2022)" />
+          </div>
+        </div>
+
+        <div class="row-1 row">
+          <div>
+            <label for="projects">Projects (one per line → Title | Tech | Short description)</label>
+            <textarea id="projects" placeholder="Weather App | JS, API | Real-time weather with city search
+Foodie Buddy | HTML, CSS, JS | Healthy food recommender"></textarea>
+            <span class="note">Tip: Add 2-6 projects for a clean layout.</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="template">Template</label>
+            <select id="template">
+              <option value="classic">Classic</option>
+              <option value="modern">Modern</option>
+            </select>
+          </div>
+          <div>
+            <label for="accent">Accent Color</label>
+            <input id="accent" type="color" value="#3b82f6" />
+          </div>
+        </div>
+
+        <div class="inline" style="margin-top:14px">
+          <button type="button" id="previewBtn" class="btn primary">Generate Preview</button>
+          <button type="button" id="downloadBtn" class="btn secondary">Download HTML</button>
+          <button type="reset" class="btn ghost">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- PREVIEW CARD -->
+    <section class="card preview">
+      <div class="head">
+        <h2>Live Preview</h2>
+        <div class="inline">
+          <span class="badge" id="templateBadge">Template: Classic</span>
+          <span class="badge" id="colorBadge">Accent: #3b82f6</span>
+        </div>
+      </div>
+      <div class="toolbar">
+        <span class="note">This is exactly what your downloaded file will look like.</span>
+      </div>
+      <iframe id="frame" title="Portfolio Preview" sandbox="allow-same-origin allow-top-navigation-by-user-activation allow-forms allow-scripts"></iframe>
+    </section>
+  </div>
+
+  <footer class="footer">Made with ❤️ — no frameworks, no backend, 100% client-side.</footer>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function sanitize(str = "") {
+      return String(str).replace(/[<>]/g, (m) => ({'<':'&lt;','>':'&gt;'}[m]));
+    }
+
+    function parseList(str, splitter=',') {
+      return str.split(splitter).map(s => s.trim()).filter(Boolean);
+    }
+
+    function parseProjects(raw) {
+      return raw.split(/\n|\r/).map(l => l.trim()).filter(Boolean).map(line => {
+        const [title = '', tech = '', desc = ''] = line.split('|').map(s => s.trim());
+        return { title, tech, desc };
+      });
+    }
+
+    function baseStyles(accent) {
+      return `
+        :root { --accent: ${accent}; }
+        * { box-sizing: border-box }
+        body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial; margin:0; color:#0f172a; }
+        a { color: var(--accent); text-decoration: none }
+        .chip { display:inline-block; padding:6px 10px; border-radius:999px; background:rgba(15,23,42,.06); margin:4px 6px 0 0; font-size:13px }
+        .pill { display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid rgba(2,6,23,.12); color:#0f172a; font-size:12px; margin-right:8px }
+        .muted { color:#475569 }
+        .grid { display:grid; gap:18px }
+      `;
+    }
+
+    function classicTemplate(data) {
+      const {name, role, bio, email, phone, location, links, skills, education, projects, accent, bioImage} = data;
+      return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+      <title>${sanitize(name)} — Portfolio</title>
+      <style>
+        ${baseStyles(accent)}
+        header { padding:28px 22px; background: linear-gradient(180deg, rgba(2,6,23,.03), transparent 80%); border-bottom:1px solid rgba(2,6,23,.06); display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px }
+        header h1 { margin:0; font-size:34px }
+        header h2 { margin:6px 0 10px; font-size:18px; color:#334155 }
+        main { padding: 22px; max-width: 980px; margin: 0 auto }
+        section { margin: 12px 0 22px }
+        h3 { margin: 0 0 10px; font-size: 16px; letter-spacing:.2px; color:#0f172a }
+        .card { border:1px solid rgba(2,6,23,.08); border-radius:14px; padding:14px 16px }
+        .projects { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:14px }
+        .project { border:1px solid rgba(2,6,23,.08); border-radius:12px; padding:12px 14px }
+      </style></head>
+      <body>
+        <header>
+          <div>
+            <h1>${sanitize(name)}</h1>
+            <h2>${sanitize(role)}</h2>
+            <p class="muted">${sanitize(bio)}</p>
+            <p>
+              ${email ? `<span class="pill">📧 ${sanitize(email)}</span>`:''}
+              ${phone ? `<span class="pill">📞 ${sanitize(phone)}</span>`:''}
+              ${location ? `<span class="pill">📍 ${sanitize(location)}</span>`:''}
+              ${links.map(u=>`<span class="pill">🔗 <a href="${u}" target="_blank" rel="noopener">${sanitize(u)}</a></span>`).join('')}
+            </p>
+          </div>
+          ${bioImage ? `<img src="${bioImage}" alt="Profile" style="width:130px;height:130px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)">` : ""}
+        </header>
+        <main>
+          <section>
+            <h3>Skills</h3>
+            ${skills.map(s=>`<span class="chip">${sanitize(s)}</span>`).join('') || '<p class="muted">—</p>'}
+          </section>
+          <section>
+            <h3>Projects</h3>
+            <div class="projects">
+              ${projects.map(p=>`<article class="project">
+                <h4 style="margin:0 0 6px; color: var(--accent)">${sanitize(p.title)}</h4>
+                <p style="margin:0 0 6px" class="muted">${sanitize(p.tech)}</p>
+                <p style="margin:0">${sanitize(p.desc)}</p>
+              </article>`).join('') || '<p class="muted">—</p>'}
+            </div>
+          </section>
+          <section>
+            <h3>Education</h3>
+            <ul>
+              ${education.map(e=>`<li>${sanitize(e)}</li>`).join('') || '<li class="muted">—</li>'}
+            </ul>
+          </section>
+        </main>
+      </body></html>`;
+    }
+
+    function modernTemplate(data) {
+      const {name, role, bio, email, phone, location, links, skills, education, projects, accent, bioImage} = data;
+      return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+      <title>${sanitize(name)} — Portfolio</title>
+      <style>
+        ${baseStyles(accent)}
+        body { background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(34,197,94,.08)); }
+        .hero { padding: 54px 24px; display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px; }
+        .hero h1 { font-size: 42px; margin: 0 }
+        .hero p { max-width:800px; margin: 12px 0 0; color:#334155 }
+        .hero .meta { margin-top: 12px }
+        .container { max-width: 1040px; margin: 0 auto; padding: 0 20px 30px }
+        .grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) }
+        .tile { background:white; border-radius:16px; padding:16px; border:1px solid rgba(2,6,23,.06) }
+        h3 { margin: 8px 0 12px; font-size:16px }
+      </style></head>
+      <body>
+        <section class="hero">
+          <div style="flex:1;min-width:250px">
+            <h1>${sanitize(name)}</h1>
+            <div class="muted" style="font-size:18px; margin-top:6px">${sanitize(role)}</div>
+            <p>${sanitize(bio)}</p>
+            <div class="meta">
+              ${email ? `<span class="pill">📧 ${sanitize(email)}</span>`:''}
+              ${phone ? `<span class="pill">📞 ${sanitize(phone)}</span>`:''}
+              ${location ? `<span class="pill">📍 ${sanitize(location)}</span>`:''}
+              ${links.map(u=>`<span class="pill">🔗 <a href="${u}" target="_blank">${sanitize(u)}</a></span>`).join('')}
+            </div>
+          </div>
+          ${bioImage ? `<img src="${bioImage}" alt="Profile" style="width:160px;height:160px;border-radius:50%;object-fit:cover;border:3px solid var(--accent)">` : ""}
+        </section>
+        <div class="container grid">
+          <section class="tile">
+            <h3>Skills</h3>
+            ${skills.map(s=>`<span class="chip">${sanitize(s)}</span>`).join('') || '<p class="muted">—</p>'}
+          </section>
+          <section class="tile">
+            <h3>Education</h3>
+            <ul>
+              ${education.map(e=>`<li>${sanitize(e)}</li>`).join('') || '<li class="muted">—</li>'}
+            </ul>
+          </section>
+          <section class="tile" style="grid-column:1/-1">
+            <h3>Projects</h3>
+            <div class="grid">
+              ${projects.map(p=>`<div class="tile" style="background:#f8fafc">
+                <h4 style="margin:0 0 6px; color: var(--accent)">${sanitize(p.title)}</h4>
+                <p style="margin:0 0 6px" class="muted">${sanitize(p.tech)}</p>
+                <p style="margin:0">${sanitize(p.desc)}</p>
+              </div>`).join('') || '<p class="muted">—</p>'}
+            </div>
+          </section>
+        </div>
+      </body></html>`;
+    }
+
+    function getFormData() {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        const file = $("bioImage").files[0];
+        if (file) {
+          reader.onload = () => {
+            resolve({
+              name: $("name").value,
+              role: $("role").value,
+              bio: $("bio").value,
+              email: $("email").value,
+              phone: $("phone").value,
+              location: $("location").value,
+              links: parseList($("links").value),
+              skills: parseList($("skills").value),
+              education: parseList($("education").value, ';'),
+              projects: parseProjects($("projects").value),
+              template: $("template").value,
+              accent: $("accent").value,
+              bioImage: reader.result
+            });
+          };
+          reader.readAsDataURL(file);
+        } else {
+          resolve({
+            name: $("name").value,
+            role: $("role").value,
+            bio: $("bio").value,
+            email: $("email").value,
+            phone: $("phone").value,
+            location: $("location").value,
+            links: parseList($("links").value),
+            skills: parseList($("skills").value),
+            education: parseList($("education").value, ';'),
+            projects: parseProjects($("projects").value),
+            template: $("template").value,
+            accent: $("accent").value,
+            bioImage: null
+          });
+        }
+      });
+    }
+
+    async function generate() {
+      const data = await getFormData();
+      const tpl = data.template === "modern" ? modernTemplate : classicTemplate;
+      const html = tpl(data);
+      const frame = $("frame").contentWindow.document;
+      frame.open(); frame.write(html); frame.close();
+      $("templateBadge").textContent = "Template: " + (data.template[0].toUpperCase() + data.template.slice(1));
+      $("colorBadge").textContent = "Accent: " + data.accent;
+      return html;
+    }
+
+    $("previewBtn").onclick = generate;
+    $("downloadBtn").onclick = async () => {
+      const html = await generate();
+      const blob = new Blob([html], {type:"text/html"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "portfolio.html"; a.click();
+      URL.revokeObjectURL(url);
+    };
+  </script>
+</body>
+</html>
